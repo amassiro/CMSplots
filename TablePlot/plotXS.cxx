@@ -71,11 +71,16 @@ TLegend* DrawTLegend(Float_t     x1,
 
 
 
-void plotXS() {
+void plotXS(std::string nameFile = "input/hig-16-021.signal.strength.txt") {
 //   gInterpreter->ExecuteMacro("tdrstyle.C");
   
-  std::ifstream file ("input/hig-16-021.signal.strength.txt"); 
+  std::cout << std::endl;
+  std::cout << std::endl;
+  std::cout << " nameFile = " << nameFile << std::endl;
+  std::cout << std::endl;
+  std::cout << std::endl;
   
+  std::ifstream file (nameFile.c_str()); 
   
   std::string buffer;
   float num;
