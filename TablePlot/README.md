@@ -11,5 +11,6 @@ Plot source: Jonatan Piedra
 How to run:
 
     r00t  plotXS.cxx
+    r00t  plotXS.cxx\(\"input/hig-16-021.signal.strength.txt\"\)
     
     
