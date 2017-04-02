@@ -23,6 +23,7 @@ std::vector<std::string> value_name;
 std::vector<float> value;
 std::vector<float> value_err_up;
 std::vector<float> value_err_low;
+std::vector<std::string> value_name_HR;
 
 
 // const UInt_t nChannel = 5;
@@ -71,7 +72,7 @@ TLegend* DrawTLegend(Float_t     x1,
 
 
 
-void plotXS(std::string nameFile = "input/hig-16-021.signal.strength.txt") {
+void plotXS(std::string nameFile = "input/hig-16-XXX.signal.strength.txt") {
 //   gInterpreter->ExecuteMacro("tdrstyle.C");
   
   std::cout << std::endl;
@@ -101,6 +102,11 @@ void plotXS(std::string nameFile = "input/hig-16-021.signal.strength.txt") {
       value_err_low.push_back(num);
       line >> num; 
       value_err_up.push_back(num);
+      
+      
+      getline(line, name);
+      value_name_HR.push_back(name);
+      
     } 
   }
   
@@ -159,7 +165,19 @@ void plotXS(std::string nameFile = "input/hig-16-021.signal.strength.txt") {
   Float_t xmin = 0.10;
   Float_t xmax = 1.75;
   Float_t ymin = 0.20;
-//   Float_t ymax = 3*nChannel + ymin + 0.6;
+
+//   std::cout << *(std::min_element(std::begin(value), std::end(value)));
+
+  
+  if ((   (*(std::min_element(std::begin(value), std::end(value))))   - (*(std::max_element(std::begin(value_err_low), std::end(value_err_low))))  ) < xmin) {
+    xmin = (   (*(std::min_element(std::begin(value), std::end(value))))   - (*(std::max_element(std::begin(value_err_low), std::end(value_err_low))))  )  - 0.5;
+  }
+  if ((   (*(std::max_element(std::begin(value), std::end(value))))   + (*(std::max_element(std::begin(value_err_up), std::end(value_err_up))))  ) > xmax) {
+    xmax = (   (*(std::max_element(std::begin(value), std::end(value))))   + (*(std::max_element(std::begin(value_err_low), std::end(value_err_low))))  )  + 0.5;
+  }
+  
+  
+  //   Float_t ymax = 3*nChannel + ymin + 0.6;
   Float_t ymax = 1*nChannel + ymin + 0.6;
   
   TH2F* h2 = new TH2F("h2", "", 100, xmin, xmax, 100, ymin, ymax);
@@ -191,8 +209,10 @@ void plotXS(std::string nameFile = "input/hig-16-021.signal.strength.txt") {
     
     Float_t value_Error = graph_values->GetErrorX(i);
     
-    DrawTLatex(42, xmin+0.05, y, 0.03, 12, Form("%s %.2f #pm %.2f", value_name.at(i).c_str(), x, value_Error), 0);
-//     DrawTLatex(42, xmin+0.05, y, 0.03, 12, Form("%s %.2f #pm %.2f", lChannel[i].Data(), x, g7lumiError), 0);
+    DrawTLatex(42, xmin+0.05, y, 0.03, 12, Form("%s %.1f #pm %.1f", value_name_HR.at(i).c_str(), x, value_Error), 0);
+//     DrawTLatex(42, xmin+0.05, y, 0.03, 12, Form("%s %.2f #pm %.2f", value_name_HR.at(i).c_str(), x, value_Error), 0);
+    //     DrawTLatex(42, xmin+0.05, y, 0.03, 12, Form("%s %.2f #pm %.2f", value_name.at(i).c_str(), x, value_Error), 0);
+    //     DrawTLatex(42, xmin+0.05, y, 0.03, 12, Form("%s %.2f #pm %.2f", lChannel[i].Data(), x, g7lumiError), 0);
   }
   
   
