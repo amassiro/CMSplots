@@ -278,6 +278,17 @@ void plotXS(std::string nameFile = "input/hig-16-XXX.signal.strength.txt") {
   
   for (Int_t j=1; j<yaxis->GetNbins(); j++) yaxis->SetBinLabel(j, "");
   
+  
+  //---- legends
+  //----------------------------------------------------------------------------
+  float ylegend = 0.76;
+  float ydelta  = 0.05;
+  
+  DrawTLegend(0.76, ylegend, average,  "Combined",  "f");   ylegend -= ydelta;
+  DrawTLegend(0.76, ylegend, l_expected,  "SM",  "l");   ylegend -= ydelta;
+  
+  
+  
   // Save
   //----------------------------------------------------------------------------
   canvas->Update();
