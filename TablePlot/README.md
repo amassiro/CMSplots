@@ -14,3 +14,8 @@ How to run:
     r00t  plotXS.cxx\(\"input/hig-16-021.signal.strength.txt\"\)
     
     
+    
+Where:
+
+    /home/amassiro/Cern/Code/CMSplots
+    
