@@ -87,25 +87,44 @@ void plotXS(std::string nameFile = "input/hig-16-XXX.signal.strength.txt") {
   float num;
   std::string name;
   
+  
+  float inclusive = 1.00;
+  float inclusive_err_low = 0.00;
+  float inclusive_err_up = 0.00;
+  
+  
   while(!file.eof()) {
     std::cout << "num =";
     getline(file,buffer);
     std::cout << "buffer = " << buffer << std::endl;
     if (buffer != "" && buffer.at(0) != '#' ){ ///---> save from empty line at the end and "comments"
       std::stringstream line( buffer );      
-      line >> name; 
-      value_name.push_back(name);
       
-      line >> num; 
-      value.push_back(num);
-      line >> num; 
-      value_err_low.push_back(num);
-      line >> num; 
-      value_err_up.push_back(num);
-      
-      
-      getline(line, name);
-      value_name_HR.push_back(name);
+      if (buffer.at(0) != '*') { 
+        line >> name; 
+        value_name.push_back(name);
+        
+        line >> num; 
+        value.push_back(num);
+        line >> num; 
+        value_err_low.push_back(num);
+        line >> num; 
+        value_err_up.push_back(num);
+        
+        
+        getline(line, name);
+        value_name_HR.push_back(name);
+      }
+      else {
+        //---- inclusive one
+        line >> name; 
+        line >> num; 
+        inclusive = num;
+        line >> num; 
+        inclusive_err_low = num;
+        line >> num; 
+        inclusive_err_up = num;               
+      }
       
     } 
   }
@@ -176,6 +195,12 @@ void plotXS(std::string nameFile = "input/hig-16-XXX.signal.strength.txt") {
     xmax = (   (*(std::max_element(std::begin(value), std::end(value))))   + (*(std::max_element(std::begin(value_err_low), std::end(value_err_low))))  )  + 0.5;
   }
   
+  //---- just for big ranges
+  if ((xmax - xmin) > 3) {
+    xmin = xmin - 3;
+  }
+  
+  
   
   //   Float_t ymax = 3*nChannel + ymin + 0.6;
   Float_t ymax = 1*nChannel + ymin + 0.6;
@@ -185,15 +210,35 @@ void plotXS(std::string nameFile = "input/hig-16-XXX.signal.strength.txt") {
   h2->Draw();
   
   
-  // NLO WZ cross-section
+  // Inclusive box
   //----------------------------------------------------------------------------
-  TBox* average = new TBox(0.8, 1.0-0.25*2, 1.2, ymax);
+//   TBox* average = new TBox(0.8, 1.0-0.25*2, 1.2, ymax);
+  TBox* average = new TBox( inclusive-inclusive_err_low   , 1.0-0.25*2, inclusive+inclusive_err_up, ymax);
+  
   
   average->SetLineColor(0);
-  average->SetFillColor(kGray+1);
+//   average->SetFillColor(kGray+1);
+  average->SetFillColor(kRed+1);
   average->SetFillStyle(3004);
   
   average ->Draw("e2,same");
+  
+  
+  TLine* l_observed = new TLine(inclusive, 1.0-0.25*2,inclusive,ymax);
+  l_observed->SetLineColor(kRed);
+  l_observed->SetLineWidth(2);
+  l_observed->SetLineStyle(2);
+  
+  l_observed->Draw();
+
+
+  TLine* l_expected = new TLine(1.00, 1.0-0.25*2,1.00,ymax);
+  l_expected->SetLineColor(kBlack);
+  l_expected->SetLineWidth(2);
+  l_expected->SetLineStyle(4);
+  l_expected->Draw();
+  
+  
   
   
   // Cross sections
