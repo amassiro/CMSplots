@@ -53,7 +53,7 @@ TLegend* DrawTLegend(Float_t     x1,
                      TString     label,
                      TString     option,
                      Float_t     tsize   = 0.03,
-                     Float_t     xoffset = 0.3,
+                     Float_t     xoffset = 0.2,
                      Float_t     yoffset = 0.05);
 
 
@@ -72,7 +72,7 @@ TLegend* DrawTLegend(Float_t     x1,
 
 
 
-void plotXS(std::string nameFile = "input/hig-16-XXX.signal.strength.txt") {
+void plotXS(std::string nameFile = "input/hig-16-XXX.signal.strength.txt", std::string outFile="xs") {
 //   gInterpreter->ExecuteMacro("tdrstyle.C");
   
   std::cout << std::endl;
@@ -88,9 +88,9 @@ void plotXS(std::string nameFile = "input/hig-16-XXX.signal.strength.txt") {
   std::string name;
   
   
-  float inclusive = 1.00;
-  float inclusive_err_low = 0.00;
-  float inclusive_err_up = 0.00;
+  float inclusive =1;
+  float inclusive_err_low = 1;
+  float inclusive_err_up = 1;
   
   
   while(!file.eof()) {
@@ -172,7 +172,7 @@ void plotXS(std::string nameFile = "input/hig-16-XXX.signal.strength.txt") {
   
   // Draw
   //----------------------------------------------------------------------------
-  TString cname = "xs";
+  TString cname = outFile.c_str();
   
   TCanvas* canvas = new TCanvas(cname, cname);
   
@@ -181,8 +181,8 @@ void plotXS(std::string nameFile = "input/hig-16-XXX.signal.strength.txt") {
 //   Float_t xmin = 0.10;
 //   Float_t xmax = 1.75;
 
-  Float_t xmin = 0.10;
-  Float_t xmax = 1.75;
+  Float_t xmin = -1;
+  Float_t xmax = 1.85;
   Float_t ymin = 0.20;
 
 //   std::cout << *(std::min_element(std::begin(value), std::end(value)));
@@ -213,6 +213,7 @@ void plotXS(std::string nameFile = "input/hig-16-XXX.signal.strength.txt") {
   // Inclusive box
   //----------------------------------------------------------------------------
 //   TBox* average = new TBox(0.8, 1.0-0.25*2, 1.2, ymax);
+  cout <<  inclusive-inclusive_err_low << ""<<  inclusive+inclusive_err_up;
   TBox* average = new TBox( inclusive-inclusive_err_low   , 1.0-0.25*2, inclusive+inclusive_err_up, ymax);
   
   
@@ -254,7 +255,7 @@ void plotXS(std::string nameFile = "input/hig-16-XXX.signal.strength.txt") {
     
     Float_t value_Error = graph_values->GetErrorX(i);
     
-    DrawTLatex(42, xmin+0.05, y, 0.03, 12, Form("%s %.1f #pm %.1f", value_name_HR.at(i).c_str(), x, value_Error), 0);
+    DrawTLatex(42, xmin+0.05, y, 0.03, 12, Form("%s:  %.1f #pm %.1f", value_name_HR.at(i).c_str(), x, value_Error), 0);
 //     DrawTLatex(42, xmin+0.05, y, 0.03, 12, Form("%s %.2f #pm %.2f", value_name_HR.at(i).c_str(), x, value_Error), 0);
     //     DrawTLatex(42, xmin+0.05, y, 0.03, 12, Form("%s %.2f #pm %.2f", value_name.at(i).c_str(), x, value_Error), 0);
     //     DrawTLatex(42, xmin+0.05, y, 0.03, 12, Form("%s %.2f #pm %.2f", lChannel[i].Data(), x, g7lumiError), 0);
@@ -265,7 +266,7 @@ void plotXS(std::string nameFile = "input/hig-16-XXX.signal.strength.txt") {
   //----------------------------------------------------------------------------
   DrawTLatex(61, 0.160, 0.940, 0.055, 31, "CMS");
   DrawTLatex(52, 0.190, 0.940, 0.030, 11, "Preliminary");
-  DrawTLatex(42, 0.925, 0.945, 0.040, 31, "15.2 fb^{-1} (13 TeV)");
+  DrawTLatex(42, 0.925, 0.945, 0.040, 31, "137 fb^{-1} (13 TeV)");
   
   h2->GetXaxis()->CenterTitle();
   h2->GetXaxis()->SetTitleOffset(1.4);
@@ -281,11 +282,11 @@ void plotXS(std::string nameFile = "input/hig-16-XXX.signal.strength.txt") {
   
   //---- legends
   //----------------------------------------------------------------------------
-  float ylegend = 0.76;
+  float ylegend = 0.35;
   float ydelta  = 0.05;
   
-  DrawTLegend(0.76, ylegend, average,  "Combined",  "f");   ylegend -= ydelta;
-  DrawTLegend(0.76, ylegend, l_expected,  "SM",  "l");   ylegend -= ydelta;
+  DrawTLegend(0.45, ylegend, average,  "Combined",  "f");   ylegend -= ydelta;
+  DrawTLegend(0.45, ylegend, l_expected,  "SM",  "l");   ylegend -= ydelta;
   
   
   
